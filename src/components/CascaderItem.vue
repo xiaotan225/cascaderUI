@@ -2,11 +2,9 @@
   <div class="cascader-item">
     <div class="left">
       <div v-for="(item, index) in options" :key="index" @click="select(item)">
-        
         <p :class="item.label ==label?'activity':'' ">{{item.label}}</p>
       </div>
     </div>
-
     <div class="right" v-if="selectItem">
       <CascaderItem :options="selectItem" @change="change" :num="this.num+1" :value="value"></CascaderItem>
     </div>
@@ -53,16 +51,11 @@ export default {
       cloneValue[this.num] = item;
       cloneValue.splice(this.num + 1);
       this.$emit("change", cloneValue);
-      
-      // this.activityList.unshift(item.label);
-
-      // let newArr =  this.removeRepetition(this.activityList)
-      // this.activityList = newArr
+   
     }
   },
   computed: {
     selectItem() {
-      // this.aa =  this.value.map(item => item.label)
       this.value.forEach(element => {
         this.options.forEach(item => {
           if (element.label == item.label) {

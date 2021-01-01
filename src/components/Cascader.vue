@@ -1,59 +1,73 @@
 <template>
   <div class="cascader" v-isBodyShow ref="cascader">
-    <div class="title" @click="clickTitile">{{result}}</div>
+    <Message :msg="'没有数据'"  ref="msg" ></Message>    
+    <div class="title" @click="clickTitile" >{{result}}</div>
     <div class="body" ref="body" style="display: none">
-      <CascaderItem  :value="value" @change="change" :options="options" :num="0"></CascaderItem>
+      <CascaderItem :value="value" @change="change" :options="options" :num="0"></CascaderItem>
     </div>
   </div>
 </template>
 <script>
 import CascaderItem from "./CascaderItem";
+import Message from './tool/Message'
+
 export default {
   components: {
-    CascaderItem
+    CascaderItem,
+    Message
   },
   data() {
     return {
-      isBody: false,
-      value: []
+      isBody: false,      // 是否显示内容
+      isNullData:false,   // 是否空数据
+      value: []           // 选择内容
     };
   },
-  created() {
-    
-  },
   props: {
+    /* 数据来源 */
     options: {
       type: Array,
       default: () => []
     }
   },
   directives: {
+    /* 点击空关闭内容 */
     isBodyShow: {
       inserted(el, binding, vnode) {
         document.addEventListener("click", e => {
           if (e.target == el || el.contains(e.target)) {
             return;
           }
-          vnode.context.$refs.body.style = 'display: none'
+          vnode.context.$refs.body.style = "display: none";
         });
       }
     }
   },
   methods: {
+
+    /* 点击标题 */
     clickTitile() {
-      this.isBody = !this.isBody;
-      this.$refs.body.style = this.isBody?'display: block':'display: none'
+      if (!this.options.length) {
+        this.$refs.msg.open()
+      } else {
+        this.isBody = !this.isBody;
+        this.$refs.body.style = this.isBody
+          ? "display: block"
+          : "display: none";
+      }
     },
+    /* 数据改变 */
     change(newValue) {
-      let arr = []
+      let arr = [];
       newValue.forEach(item => {
-        arr.push(item.label)
+        arr.push(item.label);
       });
       this.$emit("change", arr);
       this.value = newValue;
     }
   },
   computed: {
+    /* 最终结果 */
     result() {
       return this.value.map(item => item.label).join("/");
     }
@@ -87,6 +101,5 @@ export default {
   font-size: 14px;
   border: 1px solid #e4e7ed;
   border-radius: 4px;
-
 }
 </style>
